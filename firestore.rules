@@ -1,0 +1,32 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read/write for now
+    // In a production app, you would want to secure this with authentication
+    match /{document=**} {
+      allow read, write;
+    }
+    
+    // When adding authentication, use rules like these instead:
+    // match /tasks/{taskId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // }
+    
+    // match /projects/{projectId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // }
+    
+    // match /features/{featureId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // }
+    
+    // match /shipped/{itemId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // }
+    
+    // match /prdContents/{prdId} {
+    //   allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    // }
+  }
+} 
