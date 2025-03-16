@@ -93,7 +93,7 @@ const App: React.FC = () => {
         <Header>
           <Logo>
             <GlitterIcon />
-            PM.AI
+            Spenny Assistant
           </Logo>
           <StorageToggle />
           <HeaderActions>
