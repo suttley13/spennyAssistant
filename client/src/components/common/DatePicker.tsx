@@ -68,10 +68,13 @@ const RemoveButton = styled.button`
   padding: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   opacity: 0;
   transition: opacity 0.2s;
   position: absolute;
-  right: 4px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   
   ${DateButton}:hover & {
     opacity: 1;
