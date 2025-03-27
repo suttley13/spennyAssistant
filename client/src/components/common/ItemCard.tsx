@@ -69,11 +69,12 @@ const TypeIndicator = styled.div<{ color: string }>`
 const ItemContent = styled.div`
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
 `;
 
 const Description = styled.div`
   font-size: 14px;
-  margin-bottom: 6px;
   word-break: break-word;
   line-height: 1.4;
 `;
@@ -121,12 +122,26 @@ const EmptyLinkPill = styled.button<{ color: string }>`
   }
 `;
 
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-left: 8px;
+  min-width: 120px;
+`;
+
 const ItemActions = styled.div`
   display: flex;
   gap: 8px;
   opacity: 0;
   transition: opacity 0.2s;
   justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px;
+  border-radius: 4px;
+  z-index: 10;
 `;
 
 const ActionButton = styled.button<{ color?: string }>`
@@ -141,28 +156,6 @@ const ActionButton = styled.button<{ color?: string }>`
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
-`;
-
-const DeadlineContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-`;
-
-const DeadlineIndicator = styled.span<{ isPast: boolean; isSoon: boolean }>`
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  background-color: ${props =>
-    props.isPast ? '#f44336' : props.isSoon ? '#4caf50' : '#607d8b'};
-  color: #fff;
-`;
-
-const RightContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-  min-width: 120px;
 `;
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -318,14 +311,22 @@ const ItemCard: React.FC<ItemCardProps> = ({
       </ItemContent>
       
       <RightContainer>
-        <DeadlineContainer>
-          <DatePicker 
-            selectedDate={item.deadline} 
-            onChange={onDeadlineChange}
-          />
-        </DeadlineContainer>
+        <DatePicker 
+          selectedDate={item.deadline} 
+          onChange={onDeadlineChange}
+        />
         
         <ItemActions className="item-actions">
+          <ActionButton onClick={() => onDeadlineChange(null)} color="#666" title="Remove Date">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="8" y1="16" x2="16" y2="16"></line>
+            </svg>
+          </ActionButton>
+          
           <ActionButton onClick={onEdit} title="Edit">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>

@@ -142,14 +142,6 @@ const DatePicker: React.FC<{
         ) : (
           <CalendarIcon />
         )}
-        {selectedDate && (
-          <RemoveButton 
-            onClick={handleRemoveDate}
-            type="button" // Explicitly set as button type to prevent form submission
-          >
-            ×
-          </RemoveButton>
-        )}
       </DateButton>
       <HiddenInput
         ref={inputRef}
