@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Item, Project } from '../../types';
 import DatePicker from './DatePicker';
@@ -165,6 +165,18 @@ const ActionButton = styled.button<{ color?: string }>`
   }
 `;
 
+const DatePickerModal = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 20;
+`;
+
 const ItemCard: React.FC<ItemCardProps> = ({
   item,
   onEdit,
@@ -175,13 +187,41 @@ const ItemCard: React.FC<ItemCardProps> = ({
 }) => {
   const typeColor = getTypeColor(item.type);
   const project = item.type === 'Project' ? item as Project : null;
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const dateButtonRef = useRef<HTMLButtonElement>(null);
   
-  const openDatePicker = () => {
-    if (inputRef.current) {
-      inputRef.current.showPicker();
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      onDeadlineChange(e.target.value);
+      setShowDatePicker(false);
     }
   };
+  
+  const openDatePicker = () => {
+    setShowDatePicker(true);
+  };
+  
+  const closeDatePicker = () => {
+    setShowDatePicker(false);
+  };
+  
+  // Handle clicks outside of the date picker
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showDatePicker && 
+        dateButtonRef.current && 
+        !dateButtonRef.current.contains(event.target as Node)
+      ) {
+        closeDatePicker();
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDatePicker]);
   
   // Display deadline if it exists
   let formattedDeadline = '';
@@ -328,13 +368,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <DatePicker 
           selectedDate={item.deadline} 
           onChange={onDeadlineChange}
-          onPickerOpen={openDatePicker}
-        />
-        <input 
-          ref={inputRef}
-          type="date"
-          style={{ display: 'none' }}
-          onChange={(e) => onDeadlineChange(e.target.value)}
         />
         
         <ItemActions className="item-actions">
@@ -349,13 +382,33 @@ const ItemCard: React.FC<ItemCardProps> = ({
               </svg>
             </ActionButton>
           ) : (
-            <ActionButton onClick={openDatePicker} color="#1976d2" title="Add Date">
+            <ActionButton 
+              onClick={openDatePicker} 
+              color="#1976d2" 
+              title="Add Date"
+              ref={dateButtonRef}
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
+              
+              {showDatePicker && (
+                <DatePickerModal onClick={e => e.stopPropagation()}>
+                  <input
+                    type="date"
+                    onChange={handleDateChange}
+                    autoFocus
+                    style={{ 
+                      padding: '8px',
+                      borderRadius: '4px',
+                      border: '1px solid #ddd'
+                    }}
+                  />
+                </DatePickerModal>
+              )}
             </ActionButton>
           )}
           
