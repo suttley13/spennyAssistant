@@ -139,6 +139,7 @@ const ItemActions = styled.div`
   opacity: 0;
   transition: opacity 0.2s;
   justify-content: flex-end;
+  align-items: center;
   position: absolute;
   right: 0;
   background-color: rgba(255, 255, 255, 0.9);
@@ -148,6 +149,9 @@ const ItemActions = styled.div`
 `;
 
 const ActionButton = styled.button<{ color?: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   cursor: pointer;
@@ -174,7 +178,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const inputRef = React.useRef<HTMLInputElement>(null);
   
   const openDatePicker = () => {
-    inputRef.current?.click();
+    if (inputRef.current) {
+      inputRef.current.showPicker();
+    }
   };
   
   // Display deadline if it exists
