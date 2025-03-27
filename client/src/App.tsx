@@ -34,15 +34,16 @@ const Logo = styled.div`
 
 const CodeIcon = () => (
   <svg 
-    width="24" 
-    height="24" 
+    width="26" 
+    height="26" 
     viewBox="0 0 1200 1200" 
     fill="white" 
     stroke="black" 
     strokeWidth="60"
     style={{ 
       display: 'block',
-      position: 'relative'
+      position: 'relative',
+      transform: 'translateY(1px)'
     }}
   >
     <path d="m340.78 340.78c-20.391-20.391-52.781-20.391-73.219 0l-221.95 222c-20.391 20.391-20.391 52.781 0 73.219l222 222c9.6094 9.6094 24 15.609 37.219 15.609s26.391-4.7812 37.219-15.609c20.391-20.391 20.391-52.781 0-73.219l-186.05-184.78 184.78-184.78c20.438-20.438 20.438-54 0-74.438z"/>
