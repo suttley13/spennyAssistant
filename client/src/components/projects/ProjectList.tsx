@@ -17,13 +17,13 @@ const ProjectListContainer = styled.div`
   border-radius: 12px;
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  overflow: visible;
 `;
 
 const ProjectListContent = styled.div`
-  flex: 1;
-  overflow-y: auto;
+  width: 100%;
+  overflow: visible;
 `;
 
 const EmptyState = styled.div`

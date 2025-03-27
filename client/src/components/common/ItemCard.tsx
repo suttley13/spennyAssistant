@@ -126,6 +126,7 @@ const ItemActions = styled.div`
   gap: 8px;
   opacity: 0;
   transition: opacity 0.2s;
+  justify-content: flex-end;
 `;
 
 const ActionButton = styled.button<{ color?: string }>`
@@ -143,8 +144,9 @@ const ActionButton = styled.button<{ color?: string }>`
 `;
 
 const DeadlineContainer = styled.div`
-  margin-left: 8px;
-  margin-right: 8px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
 `;
 
 const DeadlineIndicator = styled.span<{ isPast: boolean; isSoon: boolean }>`
@@ -154,6 +156,13 @@ const DeadlineIndicator = styled.span<{ isPast: boolean; isSoon: boolean }>`
   background-color: ${props =>
     props.isPast ? '#f44336' : props.isSoon ? '#4caf50' : '#607d8b'};
   color: #fff;
+`;
+
+const RightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+  min-width: 120px;
 `;
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -308,34 +317,36 @@ const ItemCard: React.FC<ItemCardProps> = ({
         )}
       </ItemContent>
       
-      <DeadlineContainer>
-        <DatePicker 
-          selectedDate={item.deadline} 
-          onChange={onDeadlineChange}
-        />
-      </DeadlineContainer>
-      
-      <ItemActions className="item-actions">
-        <ActionButton onClick={onEdit} title="Edit">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-          </svg>
-        </ActionButton>
+      <RightContainer>
+        <DeadlineContainer>
+          <DatePicker 
+            selectedDate={item.deadline} 
+            onChange={onDeadlineChange}
+          />
+        </DeadlineContainer>
         
-        <ActionButton onClick={onShip} color="#4caf50" title="Ship">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14"></path>
-            <path d="M12 5l7 7-7 7"></path>
-          </svg>
-        </ActionButton>
-        
-        <ActionButton onClick={onDelete} color="#f44336" title="Delete">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-          </svg>
-        </ActionButton>
-      </ItemActions>
+        <ItemActions className="item-actions">
+          <ActionButton onClick={onEdit} title="Edit">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+          </ActionButton>
+          
+          <ActionButton onClick={onShip} color="#4caf50" title="Ship">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="M12 5l7 7-7 7"></path>
+            </svg>
+          </ActionButton>
+          
+          <ActionButton onClick={onDelete} color="#f44336" title="Delete">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </ActionButton>
+        </ItemActions>
+      </RightContainer>
     </CardContainer>
   );
 };
