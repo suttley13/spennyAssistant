@@ -182,17 +182,22 @@ const ItemCard: React.FC<ItemCardProps> = ({
   return (
     <CardContainer>
       <DragHandle className="drag-handle">
-        <img 
-          src="/noun-6-2285986.svg" 
-          alt="Drag handle" 
+        <svg 
           width="16" 
           height="16" 
+          viewBox="0 0 16 16" 
+          fill="#aaa"
           style={{ 
-            transform: 'rotate(90deg)', 
-            filter: 'invert(70%)',
             opacity: 0.6
-          }} 
-        />
+          }}
+        >
+          <circle cx="4" cy="2" r="1.5" />
+          <circle cx="12" cy="2" r="1.5" />
+          <circle cx="4" cy="8" r="1.5" />
+          <circle cx="12" cy="8" r="1.5" />
+          <circle cx="4" cy="14" r="1.5" />
+          <circle cx="12" cy="14" r="1.5" />
+        </svg>
       </DragHandle>
       
       <TypeIndicator color={typeColor} />
