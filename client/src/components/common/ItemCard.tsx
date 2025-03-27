@@ -50,6 +50,12 @@ const DragHandle = styled.div`
   &:active {
     cursor: grabbing;
   }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    transform: rotate(90deg);
+  }
 `;
 
 const TypeIndicator = styled.div<{ color: string }>`
@@ -176,17 +182,17 @@ const ItemCard: React.FC<ItemCardProps> = ({
   return (
     <CardContainer>
       <DragHandle className="drag-handle">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <circle cx="4" cy="4" r="1.5" />
-          <circle cx="4" cy="8" r="1.5" />
-          <circle cx="4" cy="12" r="1.5" />
-          <circle cx="8" cy="4" r="1.5" />
-          <circle cx="8" cy="8" r="1.5" />
-          <circle cx="8" cy="12" r="1.5" />
-          <circle cx="12" cy="4" r="1.5" />
-          <circle cx="12" cy="8" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-        </svg>
+        <img 
+          src="/noun-6-2285986.svg" 
+          alt="Drag handle" 
+          width="16" 
+          height="16" 
+          style={{ 
+            transform: 'rotate(90deg)', 
+            filter: 'invert(70%)',
+            opacity: 0.6
+          }} 
+        />
       </DragHandle>
       
       <TypeIndicator color={typeColor} />
@@ -300,7 +306,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
       
       <DeadlineContainer>
         <DatePicker 
-          value={item.deadline} 
+          selectedDate={item.deadline} 
           onChange={onDeadlineChange}
         />
       </DeadlineContainer>
