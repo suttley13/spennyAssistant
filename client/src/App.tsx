@@ -42,7 +42,6 @@ const CodeIcon = () => (
     strokeWidth="60"
     style={{ 
       display: 'block',
-      transform: 'translateY(2px)',
       position: 'relative'
     }}
   >
