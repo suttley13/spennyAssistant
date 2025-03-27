@@ -199,12 +199,12 @@ const ItemCard: React.FC<ItemCardProps> = ({
             opacity: 0.6
           }}
         >
-          <circle cx="5" cy="4" r="1.5" />
-          <circle cx="5" cy="8" r="1.5" />
-          <circle cx="5" cy="12" r="1.5" />
-          <circle cx="11" cy="4" r="1.5" />
-          <circle cx="11" cy="8" r="1.5" />
-          <circle cx="11" cy="12" r="1.5" />
+          <circle cx="5" cy="3" r="1.5" />
+          <circle cx="5" cy="9" r="1.5" />
+          <circle cx="5" cy="15" r="1.5" />
+          <circle cx="11" cy="3" r="1.5" />
+          <circle cx="11" cy="9" r="1.5" />
+          <circle cx="11" cy="15" r="1.5" />
         </svg>
       </DragHandle>
       
