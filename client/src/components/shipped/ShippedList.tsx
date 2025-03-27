@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { useTaskContext } from '../../context/TaskContext';
 import ItemCard from '../common/ItemCard';
 import Button from '../common/Button';
+import Modal from '../common/Modal';
 
 const ShippedContainer = styled.div`
   position: fixed;
-  bottom: 0;
-  right: 0;
+  bottom: 20px;
+  right: 20px;
   z-index: 100;
-  padding: 20px;
 `;
 
 const ShippedButton = styled.button`
@@ -37,10 +37,22 @@ const ShippedButton = styled.button`
   }
 `;
 
+// Custom Modal Container to make it larger with 80px margins
+const CustomModalContainer = styled.div`
+  width: calc(100% - 160px);
+  height: calc(100% - 160px);
+  max-width: calc(100% - 160px);
+  max-height: calc(100% - 160px);
+  display: flex;
+  flex-direction: column;
+`;
+
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+  overflow: hidden;
 `;
 
 const SearchContainer = styled.div`
@@ -84,7 +96,7 @@ const FilterButton = styled.button<{ active: boolean }>`
 `;
 
 const ShippedListContainer = styled.div`
-  max-height: 400px;
+  flex: 1;
   overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 4px;
@@ -223,93 +235,91 @@ const ShippedListComponent: React.FC = () => {
         </ShippedButton>
       </ShippedContainer>
       
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>Shipped Items</h2>
-              <button className="close-button" onClick={handleCloseModal}>×</button>
-            </div>
-            <ModalContent>
-              <SearchContainer>
-                <SearchInput 
-                  type="text" 
-                  placeholder="Search shipped items..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </SearchContainer>
-              
-              <FilterContainer>
-                <FilterButton 
-                  active={filter === 'all'} 
-                  onClick={() => setFilter('all')}
-                >
-                  All
-                </FilterButton>
-                <FilterButton 
-                  active={filter === 'Task'} 
-                  onClick={() => setFilter('Task')}
-                >
-                  Tasks
-                </FilterButton>
-                <FilterButton 
-                  active={filter === 'Project'} 
-                  onClick={() => setFilter('Project')}
-                >
-                  Projects
-                </FilterButton>
-                <FilterButton 
-                  active={filter === 'Feature'} 
-                  onClick={() => setFilter('Feature')}
-                >
-                  Features
-                </FilterButton>
-              </FilterContainer>
-              
-              <ShippedListContainer>
-                {filteredItems.length === 0 ? (
-                  <EmptyState>
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14"></path>
-                      <path d="M12 5l7 7-7 7"></path>
-                    </svg>
-                    <p>No shipped items found. Ship items by clicking the ship button on tasks, projects, or features.</p>
-                  </EmptyState>
-                ) : (
-                  filteredItems.map(item => (
-                    <ShippedItemRow key={item.id}>
-                      <TypeIndicator color={getTypeColor(item.type)} />
-                      <ItemContent>
-                        <Description>{item.description}</Description>
-                        <ItemMeta>
-                          <DateInfo>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M5 12h14"></path>
-                              <path d="M12 5l7 7-7 7"></path>
-                            </svg>
-                            Shipped: {formatDate(item.dateShipped)}
-                          </DateInfo>
-                          <span>{item.type}</span>
-                        </ItemMeta>
-                      </ItemContent>
-                      <UnshipButton onClick={() => handleUnship(item.id)}>
-                        Unship
-                      </UnshipButton>
-                    </ShippedItemRow>
-                  ))
-                )}
-              </ShippedListContainer>
-              
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant="outline" onClick={handleCloseModal}>
-                  Close
-                </Button>
-              </div>
-            </ModalContent>
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title="Shipped Items"
+      >
+        <CustomModalContainer>
+          <ModalContent>
+            <SearchContainer>
+              <SearchInput 
+                type="text" 
+                placeholder="Search shipped items..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </SearchContainer>
+            
+            <FilterContainer>
+              <FilterButton 
+                active={filter === 'all'} 
+                onClick={() => setFilter('all')}
+              >
+                All
+              </FilterButton>
+              <FilterButton 
+                active={filter === 'Task'} 
+                onClick={() => setFilter('Task')}
+              >
+                Tasks
+              </FilterButton>
+              <FilterButton 
+                active={filter === 'Project'} 
+                onClick={() => setFilter('Project')}
+              >
+                Projects
+              </FilterButton>
+              <FilterButton 
+                active={filter === 'Feature'} 
+                onClick={() => setFilter('Feature')}
+              >
+                Features
+              </FilterButton>
+            </FilterContainer>
+            
+            <ShippedListContainer>
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <ShippedItemRow key={item.id}>
+                    <TypeIndicator color={getTypeColor(item.type)} />
+                    <ItemContent>
+                      <Description>{item.description}</Description>
+                      <ItemMeta>
+                        <DateInfo>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                          </svg>
+                          Shipped on {formatDate(item.dateShipped)}
+                        </DateInfo>
+                        {item.type}
+                      </ItemMeta>
+                    </ItemContent>
+                    <UnshipButton 
+                      onClick={() => handleUnship(item.id)}
+                      title="Move back to active"
+                    >
+                      Unship
+                    </UnshipButton>
+                  </ShippedItemRow>
+                ))
+              ) : (
+                <EmptyState>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9l-7-7z"></path>
+                    <path d="M13 3v6h6"></path>
+                  </svg>
+                  <p>No shipped items found.</p>
+                  <p>Shipped items will appear here when you mark tasks, projects, or features as shipped.</p>
+                </EmptyState>
+              )}
+            </ShippedListContainer>
+          </ModalContent>
+        </CustomModalContainer>
+      </Modal>
     </>
   );
 };

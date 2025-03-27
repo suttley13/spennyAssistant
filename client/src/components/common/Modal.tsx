@@ -80,6 +80,9 @@ const CloseButton = styled.button`
 const ModalBody = styled.div`
   padding: 20px;
   overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ModalFooter = styled.div`
@@ -134,7 +137,7 @@ const Modal: React.FC<ModalProps> = ({
       <ModalContainer ref={modalRef} onClick={e => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
-          <CloseButton onClick={onClose}>×</CloseButton>
+          <CloseButton onClick={onClose} aria-label="Close">×</CloseButton>
         </ModalHeader>
         <ModalBody>{children}</ModalBody>
         {footer && <ModalFooter>{footer}</ModalFooter>}
