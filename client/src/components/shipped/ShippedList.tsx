@@ -43,6 +43,7 @@ const CustomModalContainer = styled.div`
   height: calc(100% - 160px);
   max-width: calc(100% - 160px);
   max-height: calc(100% - 160px);
+  min-width: 800px;
   display: flex;
   flex-direction: column;
 `;
@@ -107,6 +108,8 @@ const ShippedItemRow = styled.div`
   align-items: center;
   padding: 12px;
   border-bottom: 1px solid #eee;
+  width: 90%;
+  margin: 0 auto;
   
   &:last-child {
     border-bottom: none;
@@ -171,6 +174,8 @@ const EmptyState = styled.div`
   color: #666;
   font-size: 14px;
   text-align: center;
+  width: 90%;
+  margin: 0 auto;
   
   svg {
     margin-bottom: 16px;
