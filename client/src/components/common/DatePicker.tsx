@@ -13,20 +13,21 @@ const DatePickerContainer = styled.div`
 `;
 
 const DateButton = styled.button<{ hasDate: boolean }>`
-  display: flex;
+  display: ${({ hasDate }) => (hasDate ? 'flex' : 'none')};
   align-items: center;
-  justify-content: ${({ hasDate }) => (hasDate ? 'center' : 'center')};
-  padding: ${({ hasDate }) => (hasDate ? '4px 8px' : '4px')};
+  justify-content: center;
+  padding: 4px 8px;
   border-radius: 16px;
   cursor: pointer;
   font-size: 12px;
   transition: all 0.2s;
-  border: 1px solid ${({ hasDate }) => (hasDate ? '#dddddd' : '#ddd')};
-  background-color: ${({ hasDate }) => (hasDate ? '#f5f5f5' : '#fff')};
-  color: ${({ hasDate }) => (hasDate ? '#666' : '#666')};
+  border: 1px solid #dddddd;
+  background-color: #f5f5f5;
+  color: #666;
   min-width: 24px;
   min-height: 24px;
-  width: ${({ hasDate }) => (hasDate ? '120px' : '24px')};
+  width: 120px;
+  margin-left: auto;
   
   &:hover {
     border-color: #1976d2;
@@ -90,11 +91,13 @@ const DatePicker: React.FC<{
   onChange: (date: string | null) => void;
   disabled?: boolean;
   className?: string;
+  onPickerOpen?: () => void;
 }> = ({ 
   selectedDate, 
   onChange, 
   disabled = false,
-  className
+  className,
+  onPickerOpen
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -102,6 +105,7 @@ const DatePicker: React.FC<{
     e.preventDefault(); // Prevent form submission
     e.stopPropagation(); // Stop event from propagating up
     inputRef.current?.showPicker();
+    onPickerOpen?.();
   };
   
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,11 +141,7 @@ const DatePicker: React.FC<{
         onClick={handleButtonClick}
         type="button" // Explicitly set as button type to prevent form submission
       >
-        {selectedDate ? (
-          formatDate(selectedDate)
-        ) : (
-          <CalendarIcon />
-        )}
+        {selectedDate && formatDate(selectedDate)}
       </DateButton>
       <HiddenInput
         ref={inputRef}

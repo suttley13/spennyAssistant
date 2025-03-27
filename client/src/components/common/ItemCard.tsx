@@ -83,7 +83,9 @@ const ItemLinks = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 6px;
+  margin-top: 0;
+  margin-left: 12px;
+  align-items: center;
 `;
 
 const LinkPill = styled.a<{ color: string }>`
@@ -128,6 +130,7 @@ const RightContainer = styled.div`
   position: relative;
   margin-left: 8px;
   min-width: 120px;
+  justify-content: flex-end;
 `;
 
 const ItemActions = styled.div`
@@ -168,6 +171,11 @@ const ItemCard: React.FC<ItemCardProps> = ({
 }) => {
   const typeColor = getTypeColor(item.type);
   const project = item.type === 'Project' ? item as Project : null;
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  
+  const openDatePicker = () => {
+    inputRef.current?.click();
+  };
   
   // Display deadline if it exists
   let formattedDeadline = '';
@@ -207,7 +215,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <Description>{item.description}</Description>
         
         {/* Project-specific links */}
-        {item.type === 'Project' && (
+        {item.type === 'Project' && project && (
           <ItemLinks>
             {project?.prdLink ? (
               <LinkPill 
@@ -314,18 +322,36 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <DatePicker 
           selectedDate={item.deadline} 
           onChange={onDeadlineChange}
+          onPickerOpen={openDatePicker}
+        />
+        <input 
+          ref={inputRef}
+          type="date"
+          style={{ display: 'none' }}
+          onChange={(e) => onDeadlineChange(e.target.value)}
         />
         
         <ItemActions className="item-actions">
-          <ActionButton onClick={() => onDeadlineChange(null)} color="#666" title="Remove Date">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <line x1="8" y1="16" x2="16" y2="16"></line>
-            </svg>
-          </ActionButton>
+          {item.deadline ? (
+            <ActionButton onClick={() => onDeadlineChange(null)} color="#f44336" title="Remove Date">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="16" x2="16" y2="16"></line>
+              </svg>
+            </ActionButton>
+          ) : (
+            <ActionButton onClick={openDatePicker} color="#1976d2" title="Add Date">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </ActionButton>
+          )}
           
           <ActionButton onClick={onEdit} title="Edit">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
