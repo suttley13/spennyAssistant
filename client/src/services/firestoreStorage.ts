@@ -73,17 +73,27 @@ const loadDataFromFirestore = async <T>(
   
   try {
     // Query for documents belonging to the current user
-    const q = query(
+    // For shipped items we don't need to order by 'order'
+    const baseQuery = query(
       collection(db, collectionName),
-      where('userId', '==', DEFAULT_USER_ID),
-      orderBy('order')
+      where('userId', '==', DEFAULT_USER_ID)
     );
+    
+    // Add orderBy for collections that have order field
+    const q = collectionName !== COLLECTIONS.SHIPPED 
+      ? query(baseQuery, orderBy('order'))
+      : baseQuery;
     
     const querySnapshot = await getDocs(q);
     const items: T[] = [];
     
-    querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-      items.push(doc.data() as T);
+    querySnapshot.forEach((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+      const data = docSnapshot.data();
+      // Skip deleted items
+      if (data.deleted === true) {
+        return;
+      }
+      items.push(data as T);
     });
     
     console.log(`Loaded ${items.length} items from Firestore collection: ${collectionName}`);
@@ -116,7 +126,39 @@ export const saveTasks = async (tasks: Item[]): Promise<void> => {
       return;
     }
     
-    await saveDataToFirestore(COLLECTIONS.TASKS, tasks);
+    // First, get all existing tasks from Firestore
+    const existingTasks = await getTasks();
+    
+    // Create a set of current task IDs for quick lookup
+    const currentTaskIds = new Set(tasks.map(task => task.id));
+    
+    // Create promises for all operations
+    const promises = [];
+    
+    // Delete tasks that are no longer in the tasks array
+    for (const existingTask of existingTasks) {
+      if (!currentTaskIds.has(existingTask.id) && db) {
+        console.log(`Deleting task with ID ${existingTask.id} from Firestore`);
+        const docRef = doc(db, COLLECTIONS.TASKS, existingTask.id);
+        promises.push(setDoc(docRef, { deleted: true, userId: DEFAULT_USER_ID }));
+      }
+    }
+    
+    // Save all current tasks
+    for (const task of tasks) {
+      const taskWithUser = { 
+        ...task, 
+        userId: DEFAULT_USER_ID 
+      };
+      
+      if (db) {
+        const docRef = doc(db, COLLECTIONS.TASKS, task.id);
+        promises.push(setDoc(docRef, taskWithUser));
+      }
+    }
+    
+    await Promise.all(promises);
+    console.log(`Saved ${tasks.length} tasks to Firestore and removed deleted tasks`);
   } catch (error) {
     console.error('Error in saveTasks:', error);
     // localStorage save already done above
@@ -145,7 +187,39 @@ export const saveProjects = async (projects: Item[]): Promise<void> => {
       return;
     }
     
-    await saveDataToFirestore(COLLECTIONS.PROJECTS, projects);
+    // First, get all existing projects from Firestore
+    const existingProjects = await getProjects();
+    
+    // Create a set of current project IDs for quick lookup
+    const currentProjectIds = new Set(projects.map(project => project.id));
+    
+    // Create promises for all operations
+    const promises = [];
+    
+    // Delete projects that are no longer in the projects array
+    for (const existingProject of existingProjects) {
+      if (!currentProjectIds.has(existingProject.id) && db) {
+        console.log(`Deleting project with ID ${existingProject.id} from Firestore`);
+        const docRef = doc(db, COLLECTIONS.PROJECTS, existingProject.id);
+        promises.push(setDoc(docRef, { deleted: true, userId: DEFAULT_USER_ID }));
+      }
+    }
+    
+    // Save all current projects
+    for (const project of projects) {
+      const projectWithUser = { 
+        ...project, 
+        userId: DEFAULT_USER_ID 
+      };
+      
+      if (db) {
+        const docRef = doc(db, COLLECTIONS.PROJECTS, project.id);
+        promises.push(setDoc(docRef, projectWithUser));
+      }
+    }
+    
+    await Promise.all(promises);
+    console.log(`Saved ${projects.length} projects to Firestore and removed deleted projects`);
   } catch (error) {
     console.error('Error in saveProjects:', error);
     // localStorage save already done above
@@ -174,7 +248,39 @@ export const saveFeatures = async (features: Item[]): Promise<void> => {
       return;
     }
     
-    await saveDataToFirestore(COLLECTIONS.FEATURES, features);
+    // First, get all existing features from Firestore
+    const existingFeatures = await getFeatures();
+    
+    // Create a set of current feature IDs for quick lookup
+    const currentFeatureIds = new Set(features.map(feature => feature.id));
+    
+    // Create promises for all operations
+    const promises = [];
+    
+    // Delete features that are no longer in the features array
+    for (const existingFeature of existingFeatures) {
+      if (!currentFeatureIds.has(existingFeature.id) && db) {
+        console.log(`Deleting feature with ID ${existingFeature.id} from Firestore`);
+        const docRef = doc(db, COLLECTIONS.FEATURES, existingFeature.id);
+        promises.push(setDoc(docRef, { deleted: true, userId: DEFAULT_USER_ID }));
+      }
+    }
+    
+    // Save all current features
+    for (const feature of features) {
+      const featureWithUser = { 
+        ...feature, 
+        userId: DEFAULT_USER_ID 
+      };
+      
+      if (db) {
+        const docRef = doc(db, COLLECTIONS.FEATURES, feature.id);
+        promises.push(setDoc(docRef, featureWithUser));
+      }
+    }
+    
+    await Promise.all(promises);
+    console.log(`Saved ${features.length} features to Firestore and removed deleted features`);
   } catch (error) {
     console.error('Error in saveFeatures:', error);
     // localStorage save already done above
