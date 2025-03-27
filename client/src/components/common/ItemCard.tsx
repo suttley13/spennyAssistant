@@ -54,7 +54,6 @@ const DragHandle = styled.div`
   svg {
     width: 16px;
     height: 16px;
-    transform: rotate(90deg);
   }
 `;
 
@@ -191,12 +190,12 @@ const ItemCard: React.FC<ItemCardProps> = ({
             opacity: 0.6
           }}
         >
-          <circle cx="4" cy="2" r="1.5" />
-          <circle cx="12" cy="2" r="1.5" />
-          <circle cx="4" cy="8" r="1.5" />
-          <circle cx="12" cy="8" r="1.5" />
-          <circle cx="4" cy="14" r="1.5" />
-          <circle cx="12" cy="14" r="1.5" />
+          <circle cx="5" cy="4" r="1.5" />
+          <circle cx="5" cy="8" r="1.5" />
+          <circle cx="5" cy="12" r="1.5" />
+          <circle cx="11" cy="4" r="1.5" />
+          <circle cx="11" cy="8" r="1.5" />
+          <circle cx="11" cy="12" r="1.5" />
         </svg>
       </DragHandle>
       
