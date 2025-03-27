@@ -193,7 +193,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <svg 
           width="16" 
           height="16" 
-          viewBox="0 0 16 16" 
+          viewBox="0 0 16 19" 
           fill="#aaa"
           style={{ 
             opacity: 0.6
