@@ -187,7 +187,22 @@ export const getShippedItems = async (): Promise<ShippedItem[]> => {
     if (!isFirebaseConfigured() || !db) {
       return localStorage.getShippedItems();
     }
-    return await loadDataFromFirestore<ShippedItem>(COLLECTIONS.SHIPPED);
+    
+    // Add special handling for shipped items
+    const q = query(
+      collection(db, COLLECTIONS.SHIPPED),
+      where('userId', '==', DEFAULT_USER_ID)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const items: ShippedItem[] = [];
+    
+    querySnapshot.forEach((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+      items.push(docSnapshot.data() as ShippedItem);
+    });
+    
+    console.log(`Loaded ${items.length} shipped items from Firestore`);
+    return items;
   } catch (error) {
     console.error('Error in getShippedItems, falling back to localStorage:', error);
     return localStorage.getShippedItems();
@@ -203,7 +218,27 @@ export const saveShippedItems = async (shippedItems: ShippedItem[]): Promise<voi
       return;
     }
     
-    await saveDataToFirestore(COLLECTIONS.SHIPPED, shippedItems);
+    // Enhanced logging for debugging
+    console.log(`Saving ${shippedItems.length} shipped items to Firestore`);
+    
+    // Save each shipped item individually to ensure they persist correctly
+    const promises = shippedItems.map(item => {
+      // Make sure dateShipped is included and valid
+      const shippedItem = {
+        ...item,
+        userId: DEFAULT_USER_ID,
+        dateShipped: item.dateShipped || new Date().toISOString()
+      };
+      
+      if (db) {
+        const docRef = doc(db, COLLECTIONS.SHIPPED, item.id);
+        return setDoc(docRef, shippedItem);
+      }
+      return Promise.resolve();
+    });
+    
+    await Promise.all(promises);
+    console.log(`Successfully saved ${shippedItems.length} shipped items to Firestore`);
   } catch (error) {
     console.error('Error in saveShippedItems:', error);
     // localStorage save already done above

@@ -5,7 +5,6 @@ import TaskList from './components/tasks/TaskList';
 import ProjectList from './components/projects/ProjectList';
 import FeatureList from './components/features/FeatureList';
 import ShippedList from './components/shipped/ShippedList';
-import StorageToggle from './components/common/StorageToggle';
 
 const AppContainer = styled.div`
   display: flex;
@@ -95,7 +94,6 @@ const App: React.FC = () => {
             <GlitterIcon />
             Spenny Assistant
           </Logo>
-          <StorageToggle />
           <HeaderActions>
             <HeaderButton>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

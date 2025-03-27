@@ -17,7 +17,6 @@ type ActionType =
   | { type: 'SHIP_ITEM'; id: string; itemType: 'Task' | 'Project' | 'Feature' }
   | { type: 'UNSHIP_ITEM'; id: string }
   | { type: 'SET_ITEMS'; tasks: Item[]; projects: Item[]; features: Item[]; shipped: ShippedItem[] }
-  | { type: 'SET_STORAGE_MODE'; mode: 'firebase' | 'local' }
   | { type: 'SET_LOADING'; isLoading: boolean };
 
 // State interface
@@ -27,7 +26,6 @@ interface TaskState {
   features: Item[];
   shipped: ShippedItem[];
   isLoading: boolean;
-  storageMode: 'firebase' | 'local';
 }
 
 // Initial state
@@ -37,7 +35,6 @@ const initialState: TaskState = {
   features: [],
   shipped: [],
   isLoading: true,
-  storageMode: 'local'
 };
 
 // Reducer function
@@ -211,12 +208,6 @@ const taskReducer = (state: TaskState, action: ActionType): TaskState => {
         isLoading: false
       };
       
-    case 'SET_STORAGE_MODE':
-      return {
-        ...state,
-        storageMode: action.mode
-      };
-    
     case 'SET_LOADING':
       return {
         ...state,
@@ -249,7 +240,6 @@ interface TaskContextType extends TaskState {
   reorderItems: (items: Item[], itemType: 'Task' | 'Project' | 'Feature') => void;
   shipItem: (id: string, itemType: 'Task' | 'Project' | 'Feature') => void;
   unshipItem: (id: string) => void;
-  toggleStorageMode: () => void;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -258,15 +248,8 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined);
 export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
   
-  // Determine the storage mode based on Firebase configuration
-  useEffect(() => {
-    const firebaseAvailable = isFirebaseConfigured();
-    dispatch({ 
-      type: 'SET_STORAGE_MODE', 
-      mode: firebaseAvailable ? 'firebase' : 'local' 
-    });
-  }, []);
-
+  // No need to determine storage mode, always use Firebase if configured
+  
   // Load data on initial mount
   useEffect(() => {
     const loadData = async () => {
@@ -278,7 +261,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
             features: Item[] = [], 
             shipped: ShippedItem[] = [];
         
-        if (state.storageMode === 'firebase') {
+        if (isFirebaseConfigured()) {
           // Load from Firestore
           const [tasksData, projectsData, featuresData, shippedData] = await Promise.all([
             firestoreService.getTasks(),
@@ -293,7 +276,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
           features = featuresData as Item[];
           shipped = shippedData as ShippedItem[];
         } else {
-          // Load from localStorage
+          // Fallback to localStorage only if Firebase isn't configured
           tasks = localStorageService.getTasks();
           projects = localStorageService.getProjects();
           features = localStorageService.getFeatures();
@@ -311,30 +294,25 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Error loading data:', error);
         
         // Fallback to localStorage if Firebase fails
-        if (state.storageMode === 'firebase') {
-          dispatch({ type: 'SET_STORAGE_MODE', mode: 'local' });
-          
-          // Load from localStorage as fallback
-          const tasks = localStorageService.getTasks();
-          const projects = localStorageService.getProjects();
-          const features = localStorageService.getFeatures();
-          const shipped = localStorageService.getShippedItems();
-          
-          dispatch({ 
-            type: 'SET_ITEMS', 
-            tasks, 
-            projects, 
-            features,
-            shipped
-          });
-        }
+        const tasks = localStorageService.getTasks();
+        const projects = localStorageService.getProjects();
+        const features = localStorageService.getFeatures();
+        const shipped = localStorageService.getShippedItems();
+        
+        dispatch({ 
+          type: 'SET_ITEMS', 
+          tasks, 
+          projects, 
+          features,
+          shipped
+        });
       } finally {
         dispatch({ type: 'SET_LOADING', isLoading: false });
       }
     };
     
     loadData();
-  }, [state.storageMode]);
+  }, []); // Removed state.storageMode dependency
   
   // Save data whenever state changes
   useEffect(() => {
@@ -343,7 +321,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const saveData = async () => {
       try {
-        if (state.storageMode === 'firebase') {
+        if (isFirebaseConfigured()) {
           // Save to Firestore
           await Promise.all([
             firestoreService.saveTasks(state.tasks),
@@ -352,7 +330,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
             firestoreService.saveShippedItems(state.shipped)
           ]);
         } else {
-          // Save to localStorage
+          // Fallback to localStorage only if Firebase isn't configured
           localStorageService.saveTasks(state.tasks);
           localStorageService.saveProjects(state.projects);
           localStorageService.saveFeatures(state.features);
@@ -381,10 +359,6 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     reorderItems: (items, itemType) => dispatch({ type: 'REORDER_ITEMS', items, itemType }),
     shipItem: (id, itemType) => dispatch({ type: 'SHIP_ITEM', id, itemType }),
     unshipItem: (id) => dispatch({ type: 'UNSHIP_ITEM', id }),
-    toggleStorageMode: () => dispatch({ 
-      type: 'SET_STORAGE_MODE', 
-      mode: state.storageMode === 'firebase' ? 'local' : 'firebase'
-    })
   };
   
   return (
