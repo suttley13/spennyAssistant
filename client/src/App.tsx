@@ -17,7 +17,7 @@ const AppContainer = styled.div`
 const Header = styled.header`
   background-color: #000000;
   color: white;
-  padding: 16px 24px;
+  padding: 6px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,12 +28,12 @@ const Logo = styled.div`
   align-items: center;
   gap: 10px;
   font-size: 24px;
-  font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-weight: 200;
+  font-family: 'Poppins', sans-serif;
 `;
 
 const CodeIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 1200 1200" fill="white" stroke="none">
+  <svg width="24" height="24" viewBox="0 0 1200 1200" fill="white" stroke="none" style={{ display: 'block' }}>
     <path d="m340.78 340.78c-20.391-20.391-52.781-20.391-73.219 0l-221.95 222c-20.391 20.391-20.391 52.781 0 73.219l222 222c9.6094 9.6094 24 15.609 37.219 15.609s26.391-4.7812 37.219-15.609c20.391-20.391 20.391-52.781 0-73.219l-186.05-184.78 184.78-184.78c20.438-20.438 20.438-54 0-74.438z"/>
     <path d="m932.39 340.78c-20.391-20.391-52.781-20.391-73.219 0-20.391 20.391-20.391 52.781 0 73.219l184.82 186-184.78 184.78c-20.391 20.391-20.391 52.781 0 73.219 9.6094 9.6094 24 15.609 37.219 15.609s26.391-4.7812 37.219-15.609l222-222c20.391-20.391 20.391-52.781 0-73.219z"/>
     <path d="m718.78 330c-26.391-12-57.609 0-68.391 26.391l-194.39 444c-12 26.391 0 57.609 26.391 68.391 7.2188 3.6094 14.391 4.7812 20.391 4.7812 20.391 0 39.609-12 48-31.219l194.39-444c12.047-25.125 0.046875-56.344-26.391-68.344z"/>
