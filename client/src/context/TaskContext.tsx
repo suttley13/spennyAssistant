@@ -50,7 +50,7 @@ const taskReducer = (state: TaskState, action: ActionType): TaskState => {
         order: getNextOrder(state, action.item.type)
       };
       
-      // Add to appropriate collection at the beginning
+      // Add to appropriate collection (at the top)
       if (newItem.type === 'Task') {
         return { ...state, tasks: [newItem, ...state.tasks] };
       } else if (newItem.type === 'Project') {
