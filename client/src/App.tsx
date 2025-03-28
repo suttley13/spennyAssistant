@@ -106,7 +106,7 @@ const App: React.FC = () => {
         <Header>
           <Logo>
             <CodeIcon />
-            Spenny Assistant
+            Spenny Assistant Test
           </Logo>
           <HeaderActions>
             <HeaderButton>
