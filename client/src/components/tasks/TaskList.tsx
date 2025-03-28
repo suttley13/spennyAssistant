@@ -45,8 +45,8 @@ const TaskList: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   
-  // Sort tasks by order in descending order to show newer tasks at the top
-  const sortedTasks = [...tasks].sort((a, b) => b.order - a.order);
+  // Sort tasks by order (ascending) - new tasks will have lower numbers
+  const sortedTasks = [...tasks].sort((a, b) => a.order - b.order);
   
   // Ref for sortable container
   const taskListRef = useSortable({

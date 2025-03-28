@@ -50,13 +50,13 @@ const taskReducer = (state: TaskState, action: ActionType): TaskState => {
         order: getNextOrder(state, action.item.type)
       };
       
-      // Add to appropriate collection (at the top)
+      // Add to appropriate collection
       if (newItem.type === 'Task') {
-        return { ...state, tasks: [newItem, ...state.tasks] };
+        return { ...state, tasks: [...state.tasks, newItem] };
       } else if (newItem.type === 'Project') {
-        return { ...state, projects: [newItem, ...state.projects] };
+        return { ...state, projects: [...state.projects, newItem] };
       } else {
-        return { ...state, features: [newItem, ...state.features] };
+        return { ...state, features: [...state.features, newItem] };
       }
     }
     
@@ -228,7 +228,7 @@ const getNextOrder = (state: TaskState, itemType: 'Task' | 'Project' | 'Feature'
       : state.features;
   
   return items.length > 0
-    ? Math.max(...items.map(item => item.order)) + 1
+    ? Math.min(...items.map(item => item.order)) - 1  // Use min instead of max to assign lower numbers for newer items
     : 0;
 };
 
